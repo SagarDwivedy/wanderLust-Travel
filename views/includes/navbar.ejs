@@ -1,0 +1,64 @@
+<nav class="wl-navbar">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="brand-link" href="/listings">
+      <div class="brand-icon"><i class="fa-regular fa-compass"></i></div>
+      <span class="brand-name">Wanderlust</span>
+    </a>
+
+    <!-- Search -->
+    <div class="wl-search-wrap d-none d-md-block">
+      <form action="/listings" method="GET" role="search">
+        <i class="fa-solid fa-magnifying-glass wl-search-icon"></i>
+        <input
+          class="wl-search-input"
+          type="search"
+          name="search"
+          placeholder="Search destinations, cities..."
+          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+          autocomplete="off"/>
+        <button class="wl-search-btn" type="submit">Search</button>
+      </form>
+    </div>
+
+    <!-- Mobile toggler -->
+    <button class="navbar-toggler d-md-none ms-auto me-2" type="button" data-bs-toggle="collapse" data-bs-target="#navCollapse">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Nav Links -->
+    <div class="wl-nav-links d-none d-md-flex">
+      <a class="wl-nav-link" href="/listings">Explore</a>
+      <% if (currUser) { %>
+        <a class="wl-nav-link" href="/listings/new"><i class="fa-solid fa-plus" style="font-size:11px;margin-right:4px;"></i>Add Listing</a>
+        <a class="wl-nav-link" href="/users/<%= currUser._id %>">Profile</a>
+        <a class="wl-nav-btn wl-btn" href="/logout">Log out</a>
+      <% } else { %>
+        <a class="wl-nav-btn-outline" href="/signup">Sign Up</a>
+        <a class="wl-nav-btn" href="/login">Log In</a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Mobile collapse -->
+  <div class="collapse" id="navCollapse" style="background:var(--cream); border-top:1px solid var(--sand); padding:12px 24px 16px;">
+    <!-- Mobile search -->
+    <form action="/listings" method="GET" class="mb-3" role="search">
+      <div style="position:relative;">
+        <i class="fa-solid fa-magnifying-glass wl-search-icon"></i>
+        <input class="wl-search-input" style="padding-right:16px;" type="search" name="search" placeholder="Search destinations..." value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"/>
+      </div>
+    </form>
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <a class="wl-nav-link" href="/listings">Explore</a>
+      <% if (currUser) { %>
+        <a class="wl-nav-link" href="/listings/new">Add Listing</a>
+        <a class="wl-nav-link" href="/users/<%= currUser._id %>">My Profile</a>
+        <a class="wl-nav-link" href="/logout">Log out</a>
+      <% } else { %>
+        <a class="wl-nav-link" href="/signup">Sign Up</a>
+        <a class="wl-nav-link" href="/login">Log In</a>
+      <% } %>
+    </div>
+  </div>
+</nav>

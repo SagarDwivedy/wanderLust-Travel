@@ -1,0 +1,73 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="wl-auth-page">
+  <div class="wl-auth-card">
+    <div class="wl-auth-logo">
+      <div class="wl-auth-logo-icon"><i class="fa-regular fa-compass"></i></div>
+      <span class="wl-auth-logo-name">Wanderlust</span>
+    </div>
+
+    <h2 class="wl-auth-title">Create your account</h2>
+    <p class="wl-auth-sub">Join thousands of travellers discovering unique stays</p>
+
+    <form action="/signup" method="POST" novalidate class="needs-validation">
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="username">Username</label>
+        <input name="username" id="username" type="text" class="wl-form-control"
+          placeholder="Choose a username" required autocomplete="username"/>
+      </div>
+
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="email">Email address</label>
+        <input name="email" id="email" type="email" class="wl-form-control"
+          placeholder="you@example.com" required autocomplete="email"/>
+      </div>
+
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="password">Password</label>
+        <div style="position:relative;">
+          <input name="password" id="password" type="password" class="wl-form-control"
+            placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password"
+            style="padding-right:42px;" oninput="updateStrength(this.value)"/>
+          <button type="button" onclick="togglePw()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:14px;">
+            <i class="fa-regular fa-eye" id="pwEye"></i>
+          </button>
+        </div>
+        <div class="wl-pw-strength" style="margin-top:7px;">
+          <div class="wl-pw-strength-bar" id="pwBar"></div>
+        </div>
+        <div id="pwMsg" style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;"></div>
+      </div>
+
+      <button type="submit" class="wl-btn wl-btn-primary wl-btn-lg wl-btn-full" style="justify-content:center;margin-top:8px;">
+        Create Account
+      </button>
+    </form>
+
+    <p class="wl-auth-link">Already have an account? <a href="/login">Log in</a></p>
+  </div>
+</div>
+
+<script>
+function updateStrength(val) {
+  const bar = document.getElementById('pwBar');
+  const msg = document.getElementById('pwMsg');
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (/[A-Z]/.test(val)) score++;
+  if (/[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ['#E24B4A','#EF9F27','#4a7fa5','#639922'];
+  const labels = ['Weak','Fair','Good','Strong'];
+  bar.style.width = (score * 25) + '%';
+  bar.style.background = colors[score-1] || '#e0e0e0';
+  msg.textContent = score > 0 ? labels[score-1] : '';
+  msg.style.color = colors[score-1] || 'inherit';
+}
+function togglePw() {
+  const inp = document.getElementById('password');
+  const eye = document.getElementById('pwEye');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  eye.className = inp.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
+}
+</script>

@@ -1,0 +1,12 @@
+<% if(success && success.length) { %>
+  <div class="wl-flash wl-flash-success">
+    <i class="fa-solid fa-circle-check"></i>
+    <%= success %>
+  </div>
+<% } %>
+<% if(error && error.length) { %>
+  <div class="wl-flash wl-flash-error">
+    <i class="fa-solid fa-circle-exclamation"></i>
+    <%= error %>
+  </div>
+<% } %>

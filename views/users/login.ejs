@@ -1,0 +1,47 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="wl-auth-page">
+  <div class="wl-auth-card">
+    <div class="wl-auth-logo">
+      <div class="wl-auth-logo-icon"><i class="fa-regular fa-compass"></i></div>
+      <span class="wl-auth-logo-name">Wanderlust</span>
+    </div>
+
+    <h2 class="wl-auth-title">Welcome back</h2>
+    <p class="wl-auth-sub">Sign in to continue your journey</p>
+
+    <form action="/login" method="POST" novalidate class="needs-validation">
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="username">Username</label>
+        <input name="username" id="username" type="text" class="wl-form-control"
+          placeholder="Your username" required autocomplete="username"/>
+      </div>
+
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="password">Password</label>
+        <div style="position:relative;">
+          <input name="password" id="password" type="password" class="wl-form-control"
+            placeholder="Your password" required style="padding-right:42px;" autocomplete="current-password"/>
+          <button type="button" onclick="togglePw()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:14px;">
+            <i class="fa-regular fa-eye" id="pwEye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="wl-btn wl-btn-primary wl-btn-lg wl-btn-full" style="justify-content:center;margin-top:8px;">
+        Log In
+      </button>
+    </form>
+
+    <p class="wl-auth-link">Don't have an account? <a href="/signup">Sign up free</a></p>
+  </div>
+</div>
+
+<script>
+function togglePw() {
+  const inp = document.getElementById('password');
+  const eye = document.getElementById('pwEye');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+  eye.className = inp.type === 'password' ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash';
+}
+</script>

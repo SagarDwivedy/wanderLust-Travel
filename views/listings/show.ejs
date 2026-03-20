@@ -1,0 +1,196 @@
+<% layout("/layouts/boilerplate") %>
+<script>
+  const mapToken = "<%= process.env.MAP_TOKEN %>";
+  const listingCoordinates = <%- JSON.stringify(listing.geometry.coordinates) %>;
+</script>
+
+<div class="wl-show-wrap">
+
+  <!-- Header -->
+  <div class="wl-show-header">
+    <h1 class="wl-show-title"><%= listing.title %></h1>
+    <div class="wl-show-meta">
+      <span><i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></span>
+      <% if(listing.reviews.length > 0) { %>
+        <%
+          let avg = (listing.reviews.reduce((s,r) => s+(r.rating||0),0)/listing.reviews.length).toFixed(1);
+        %>
+        <span><i class="fa-solid fa-star"></i> <%= avg %> &middot; <%= listing.reviews.length %> review<%= listing.reviews.length !== 1 ? 's' : '' %></span>
+      <% } %>
+      <% if(listing.category) { %>
+        <span><i class="fa-solid fa-tag"></i> <%= listing.category.replace('_',' ') %></span>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Hero Image -->
+  <div class="wl-show-img-wrap">
+    <img src="<%= listing.image.url %>" alt="<%= listing.title %>" class="wl-show-img"/>
+  </div>
+
+  <!-- Two-col layout -->
+  <div class="wl-show-grid">
+
+    <!-- Left: Details -->
+    <div>
+      <!-- Owner -->
+      <div class="wl-owner-row">
+        <div class="wl-owner-avatar"><%= listing.owner.username.charAt(0).toUpperCase() %></div>
+        <div>
+          <div class="wl-owner-name">Hosted by <%= listing.owner.username %></div>
+          <div class="wl-owner-label">Wanderlust Host</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <p class="wl-description"><%= listing.description %></p>
+
+      <!-- Owner actions -->
+      <% if(currUser && listing.owner._id.equals(currUser._id)) { %>
+        <div class="wl-owner-actions">
+          <a href="/listings/<%= listing._id %>/edit" class="wl-btn wl-btn-outline">
+            <i class="fa-solid fa-pen"></i> Edit listing
+          </a>
+          <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE" style="display:inline;">
+            <button type="submit" class="wl-btn wl-btn-danger"
+              onclick="return confirm('Delete this listing? This cannot be undone.')">
+              <i class="fa-solid fa-trash"></i> Delete
+            </button>
+          </form>
+        </div>
+      <% } %>
+
+      <!-- Map -->
+      <div style="margin-top:32px;">
+        <h3 class="wl-show-section-title">Where you'll be</h3>
+        <div id="map"></div>
+        <p style="font-size:13px;color:var(--ink-soft);margin-top:10px;">
+          <i class="fa-solid fa-location-dot" style="color:var(--gold);margin-right:5px;"></i>
+          <%= listing.location %>, <%= listing.country %>
+        </p>
+      </div>
+
+      <!-- Reviews -->
+      <div class="wl-reviews-section">
+        <h3 class="wl-show-section-title">
+          <% if(listing.reviews.length > 0) { %>
+            <%
+              let avg2 = (listing.reviews.reduce((s,r) => s+(r.rating||0),0)/listing.reviews.length).toFixed(1);
+            %>
+            <i class="fa-solid fa-star" style="color:var(--gold);font-size:18px;"></i>
+            <%= avg2 %> &middot; <%= listing.reviews.length %> Review<%= listing.reviews.length !== 1 ? 's' : '' %>
+          <% } else { %>
+            Reviews
+          <% } %>
+        </h3>
+
+        <!-- Leave a review form -->
+        <% if(currUser) { %>
+          <div class="wl-review-form">
+            <p class="wl-review-form-title">Share your experience</p>
+            <form action="/listings/<%= listing.id %>/reviews" method="POST" novalidate class="needs-validation">
+              <div class="wl-form-group">
+                <label class="wl-form-label">Your rating</label>
+                <fieldset class="starability-slot" style="margin-top:4px;">
+                  <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="0" checked/>
+                  <input type="radio" id="first-rate1" name="review[rating]" value="1"/>
+                  <label for="first-rate1" title="Terrible">1 star</label>
+                  <input type="radio" id="first-rate2" name="review[rating]" value="2"/>
+                  <label for="first-rate2" title="Not good">2 stars</label>
+                  <input type="radio" id="first-rate3" name="review[rating]" value="3"/>
+                  <label for="first-rate3" title="Average">3 stars</label>
+                  <input type="radio" id="first-rate4" name="review[rating]" value="4"/>
+                  <label for="first-rate4" title="Very good">4 stars</label>
+                  <input type="radio" id="first-rate5" name="review[rating]" value="5"/>
+                  <label for="first-rate5" title="Amazing">5 stars</label>
+                </fieldset>
+              </div>
+              <div class="wl-form-group">
+                <label class="wl-form-label" for="comment">Your comment</label>
+                <textarea name="review[comment]" id="comment" class="wl-form-control" rows="4"
+                  placeholder="What did you love about this place?" required></textarea>
+              </div>
+              <button type="submit" class="wl-btn wl-btn-primary">Submit Review</button>
+            </form>
+          </div>
+        <% } %>
+
+        <!-- All reviews -->
+        <% if(listing.reviews.length === 0) { %>
+          <p style="color:var(--ink-soft);font-size:14px;font-style:italic;">No reviews yet. Be the first to share your experience!</p>
+        <% } %>
+
+        <% for(let review of listing.reviews) { %>
+          <div class="wl-review-card">
+            <div class="wl-review-header">
+              <div class="wl-review-author">
+                <div class="wl-review-avatar"><%= review.author.username.charAt(0).toUpperCase() %></div>
+                <div>
+                  <div class="wl-review-name">@<%= review.author.username %></div>
+                  <div class="wl-stars">
+                    <% for(let i=1;i<=5;i++) { %>
+                      <i class="fa-solid fa-star <%= i <= review.rating ? '' : 'empty' %>"></i>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+              <!-- Delete review — only for author -->
+              <% if(currUser && review.author._id.equals(currUser._id)) { %>
+                <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                  <button class="wl-btn wl-btn-sm wl-btn-danger" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              <% } %>
+            </div>
+            <p class="wl-review-text"><%= review.comment %></p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Right: Booking card -->
+    <div>
+      <div class="wl-booking-card">
+        <div class="wl-booking-price">
+          &#8377;<%= listing.price.toLocaleString('en-IN') %>
+          <span>/ night</span>
+        </div>
+        <p class="wl-booking-tax">+18% GST applicable</p>
+
+        <% if(currUser) { %>
+          <a href="#" class="wl-btn wl-btn-gold wl-btn-full wl-btn-lg" style="margin-bottom:12px;justify-content:center;">
+            <i class="fa-regular fa-calendar"></i> Reserve
+          </a>
+        <% } else { %>
+          <a href="/login" class="wl-btn wl-btn-primary wl-btn-full wl-btn-lg" style="margin-bottom:12px;justify-content:center;">
+            Log in to reserve
+          </a>
+        <% } %>
+
+        <p style="font-size:12px;color:var(--ink-soft);text-align:center;">You won't be charged yet</p>
+
+        <div class="wl-divider"></div>
+
+        <div style="font-size:13.5px;color:var(--ink-soft);">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span>&#8377;<%= listing.price.toLocaleString('en-IN') %> &times; 1 night</span>
+            <span>&#8377;<%= listing.price.toLocaleString('en-IN') %></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+            <span>GST (18%)</span>
+            <span>&#8377;<%= Math.round(listing.price * 0.18).toLocaleString('en-IN') %></span>
+          </div>
+          <div class="wl-divider" style="margin:12px 0;"></div>
+          <div style="display:flex;justify-content:space-between;font-weight:500;color:var(--ink);">
+            <span>Total</span>
+            <span>&#8377;<%= Math.round(listing.price * 1.18).toLocaleString('en-IN') %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="/js/map.js"></script>

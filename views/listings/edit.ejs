@@ -1,0 +1,86 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="wl-form-page">
+  <div class="wl-form-card">
+    <h2 class="wl-form-title">Edit listing</h2>
+    <p class="wl-form-subtitle">Update the details of your space</p>
+
+    <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="title">Title</label>
+        <input name="listing[title]" id="title" type="text" class="wl-form-control"
+          value="<%= listing.title %>" required/>
+      </div>
+
+      <div class="wl-form-group">
+        <label class="wl-form-label" for="description">Description</label>
+        <textarea name="listing[description]" id="description" class="wl-form-control" rows="4" required><%= listing.description %></textarea>
+      </div>
+
+      <div class="wl-form-group">
+        <label class="wl-form-label">Update photo</label>
+        <div style="margin-bottom:10px;border-radius:var(--radius-md);overflow:hidden;max-height:160px;">
+          <img src="<%= listing.image.url %>" alt="current image" style="width:100%;height:160px;object-fit:cover;"/>
+        </div>
+        <label class="wl-file-label" for="listingImage" style="padding:14px;">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+          <span>Replace photo (optional)</span>
+        </label>
+        <input type="file" name="listing[image]" id="listingImage" class="wl-file-input" accept="image/*"/>
+        <div id="fileNameDisplay" style="font-size:12px;color:var(--sage);margin-top:5px;"></div>
+      </div>
+
+      <div class="wl-form-row">
+        <div class="wl-form-group">
+          <label class="wl-form-label" for="price">Price per night (₹)</label>
+          <div class="wl-input-prefix">
+            <span class="prefix">₹</span>
+            <input name="listing[price]" id="price" type="number" class="wl-form-control"
+              value="<%= listing.price %>" min="1" required/>
+          </div>
+        </div>
+        <div class="wl-form-group">
+          <label class="wl-form-label" for="category">Category</label>
+          <select name="listing[category]" id="category" class="wl-select">
+            <option value="">— Select category —</option>
+            <% const cats = ['trending','rooms','iconic_cities','castles','mountain','camping','beach','nature']; %>
+            <% const catLabels = {'trending':'Trending','rooms':'Rooms','iconic_cities':'Iconic Cities','castles':'Castles','mountain':'Mountain Views','camping':'Camping','beach':'Beach','nature':'Amazing Nature'}; %>
+            <% for(let c of cats) { %>
+              <option value="<%= c %>" <%= listing.category === c ? 'selected' : '' %>><%= catLabels[c] %></option>
+            <% } %>
+          </select>
+        </div>
+      </div>
+
+      <div class="wl-form-row">
+        <div class="wl-form-group">
+          <label class="wl-form-label" for="location">City / Location</label>
+          <input name="listing[location]" id="location" type="text" class="wl-form-control"
+            value="<%= listing.location %>" required/>
+        </div>
+        <div class="wl-form-group">
+          <label class="wl-form-label" for="country">Country</label>
+          <input name="listing[country]" id="country" type="text" class="wl-form-control"
+            value="<%= listing.country %>" required/>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:8px;">
+        <button type="submit" class="wl-btn wl-btn-primary wl-btn-lg" style="flex:1;justify-content:center;">
+          <i class="fa-solid fa-floppy-disk"></i> Save Changes
+        </button>
+        <a href="/listings/<%= listing._id %>" class="wl-btn wl-btn-outline wl-btn-lg">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById('listingImage').addEventListener('change', function() {
+    const name = this.files[0] ? this.files[0].name : '';
+    document.getElementById('fileNameDisplay').textContent = name ? '📎 ' + name : '';
+  });
+</script>

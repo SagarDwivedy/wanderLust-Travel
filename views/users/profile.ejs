@@ -1,0 +1,71 @@
+<% layout("/layouts/boilerplate") %>
+
+<div style="background:var(--ink); padding:48px 0 40px;">
+  <div style="max-width:960px; margin:0 auto; padding:0 24px; display:flex; align-items:center; gap:24px;">
+    <div style="width:80px;height:80px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:32px;font-weight:600;color:var(--ink);flex-shrink:0;">
+      <%= profileUser.username.charAt(0).toUpperCase() %>
+    </div>
+    <div>
+      <h1 style="font-family:var(--font-display);font-size:32px;font-weight:400;color:var(--parchment);margin-bottom:6px;">
+        <%= profileUser.username %>
+      </h1>
+      <p style="font-size:13.5px;color:rgba(245,240,232,0.6);">
+        <i class="fa-regular fa-envelope" style="margin-right:6px;"></i><%= profileUser.email %>
+        &nbsp;&middot;&nbsp;
+        <i class="fa-solid fa-house" style="margin-right:6px;"></i>
+        <%= userListings.length %> listing<%= userListings.length !== 1 ? 's' : '' %>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:960px;margin:0 auto;padding:40px 24px 60px;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+    <h2 style="font-family:var(--font-display);font-size:26px;font-weight:400;color:var(--ink);">
+      <% if(currUser && currUser._id.equals(profileUser._id)) { %>
+        Your listings
+      <% } else { %>
+        Listings by <%= profileUser.username %>
+      <% } %>
+    </h2>
+    <% if(currUser && currUser._id.equals(profileUser._id)) { %>
+      <a href="/listings/new" class="wl-btn wl-btn-primary">
+        <i class="fa-solid fa-plus"></i> Add listing
+      </a>
+    <% } %>
+  </div>
+
+  <% if(userListings.length === 0) { %>
+    <div class="wl-empty">
+      <h3>No listings yet</h3>
+      <p>Start hosting by adding your first listing.</p>
+      <% if(currUser && currUser._id.equals(profileUser._id)) { %>
+        <a href="/listings/new" class="wl-btn wl-btn-primary" style="margin-top:20px;">Add a listing</a>
+      <% } %>
+    </div>
+  <% } else { %>
+    <div class="wl-listings-grid">
+      <% for(let listing of userListings) { %>
+        <a href="/listings/<%= listing._id %>" class="wl-listing-link">
+          <div class="wl-card">
+            <div class="wl-card-img-wrap">
+              <img src="<%= listing.image.url %>" class="wl-card-img" alt="<%= listing.title %>"/>
+              <div class="wl-card-badge">Wanderlust</div>
+            </div>
+            <div class="wl-card-body">
+              <% if(listing.category) { %><div class="wl-card-category"><%= listing.category.replace('_',' ') %></div><% } %>
+              <div class="wl-card-title"><%= listing.title %></div>
+              <div class="wl-card-location"><i class="fa-solid fa-location-dot"></i><%= listing.location %>, <%= listing.country %></div>
+              <div class="wl-card-footer">
+                <div class="wl-card-price"><strong>&#8377;<%= listing.price.toLocaleString('en-IN') %></strong> <span style="font-size:13px;color:var(--ink-soft);font-weight:400;">/night</span></div>
+                <% if(currUser && currUser._id.equals(profileUser._id)) { %>
+                  <a href="/listings/<%= listing._id %>/edit" class="wl-btn wl-btn-sm wl-btn-outline" onclick="event.stopPropagation();" style="font-size:12px;padding:5px 12px;">Edit</a>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </a>
+      <% } %>
+    </div>
+  <% } %>
+</div>
