@@ -281,3 +281,59 @@ textarea.wl-form-control { resize:vertical; min-height:100px; }
 .wl-profile-avatar-lg { width:80px; height:80px; background:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:32px; font-weight:600; color:var(--ink); margin-bottom:16px; }
 .wl-profile-name { font-family:var(--font-display); font-size:32px; font-weight:400; margin-bottom:4px; }
 .wl-profile-meta { font-size:13.5px; color:rgba(245,240,232,0.6); display:flex; gap:16px; flex-wrap:wrap; }
+
+/* ══════════════════════════════════════
+   MOBILE RESPONSIVE FIXES
+   ══════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .wl-navbar {
+    height: auto;
+    min-height: 64px;
+    padding: 10px 0;
+  }
+  .wl-navbar .container-fluid {
+    flex-wrap: wrap;
+    padding: 0 16px;
+    gap: 8px;
+  }
+  .wl-search-wrap { display: none !important; }
+  .wl-nav-links { display: none !important; }
+  .navbar-toggler { display: flex !important; align-items: center; margin-left: auto; }
+  #navCollapse { width: 100%; flex-basis: 100%; }
+  .wl-filter-bar { padding: 10px 0 4px; }
+  .wl-filter { padding: 6px 12px; }
+  .wl-filter i { font-size: 18px; }
+  .wl-filter span { font-size: 10.5px; }
+  .wl-tax-toggle { margin-left: 12px; padding: 6px 12px; font-size: 12px; }
+  .wl-listings-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; padding: 16px 0 32px; }
+  .wl-show-grid { grid-template-columns: 1fr; }
+  .wl-show-wrap { padding: 20px 12px 40px; }
+  .wl-show-title { font-size: 26px; }
+  .wl-show-img-wrap { aspect-ratio: 4/3; margin-bottom: 20px; }
+  .wl-booking-card { position: static; margin-top: 24px; }
+  .wl-form-card { padding: 24px 20px; border-radius: var(--radius-lg); }
+  .wl-form-page { padding: 20px 12px 40px; }
+  .wl-auth-card { padding: 28px 20px; border-radius: var(--radius-lg); border: none; box-shadow: none; }
+  .wl-auth-page { padding: 20px 12px; align-items: flex-start; }
+  .wl-footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .wl-footer-bottom { flex-direction: column; align-items: flex-start; gap: 8px; }
+  #map { height: 280px; }
+  .wl-owner-actions { flex-direction: column; }
+  .wl-owner-actions .wl-btn { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .wl-listings-grid { grid-template-columns: 1fr; }
+  .wl-footer-grid { grid-template-columns: 1fr; }
+  .wl-form-row { grid-template-columns: 1fr; }
+  .wl-show-title { font-size: 22px; }
+  .wl-booking-price { font-size: 22px; }
+  .wl-review-form .wl-btn { width: 100%; justify-content: center; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .wl-listings-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .wl-show-grid { grid-template-columns: 1fr 300px; gap: 24px; }
+  .wl-footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+}
