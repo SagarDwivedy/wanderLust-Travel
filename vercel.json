@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://wanderlust-travel-production.up.railway.app/$1",
+      "permanent": false
+    }
+  ]
+}
